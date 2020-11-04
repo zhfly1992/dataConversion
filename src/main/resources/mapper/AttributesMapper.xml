@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.run.dataConversion.repository.AttributesRepository">
+
+	<insert id="addAttributes" parameterType="com.run.dataConversion.entity.Attributes">
+		insert into Attributes(
+		id,
+		iotName,
+		iotMark,
+		deviceTypeId,
+		creatTime,
+		updateTime,
+		sort,
+		dataType,
+		rwType,
+		dataRange,
+		manageState,
+		locmanName,
+		locmanMark
+		)
+		values(
+		#{id},
+		#{iotName},
+		#{iotMark},
+		#{deviceTypeId},
+		now(),
+		"",
+		#{sort},
+		#{dataType},
+		#{rwType},
+		#{dataRange},
+		#{manageState},
+		#{locmanName},
+		#{locmanMark}
+		)
+	</insert>
+
+	<update id="updateAttributes" parameterType="com.run.dataConversion.entity.Attributes">
+		UPDATE Attributes
+		SET id = #{id},
+		<if test="null == manageState or manageState =='' ">
+			iotName = #{iotName},
+			iotMark = #{iotMark},
+			updateTime =
+			now(),
+			sort = #{sort},
+			dataType = #{dataType},
+			rwType = #{rwType},
+			dataRange = #{dataRange},
+			locmanName = #{locmanName},
+			locmanMark =
+			#{locmanMark}
+		</if>
+		<if
+			test="null != manageState and manageState !='' and manageState == 'disable' ">
+			manageState = 'disable'
+		</if>
+
+		WHERE
+		id = #{id}
+		and manageState = 'enable'
+
+
+	</update>
+
+	<select id="getAttributesByDeviceType" resultType="com.run.dataConversion.entity.Attributes">
+		SELECT
+		a.id,
+		a.iotName,
+		a.iotMark,
+		a.deviceTypeId,
+		a.creatTime,
+		a.updateTime,
+		a.sort,
+		a.dataType,
+		a.rwType,
+		a.dataRange,
+		a.manageState,
+		a.locmanName,
+		a.locmanMark
+		FROM
+		Attributes a
+		WHERE
+		a.deviceTypeId =
+		#{deviceTypeId}
+		and
+		a.manageState = 'enable'
+		<if test="null != id and id != ''">
+			and a.id != #{id}
+		</if>
+
+		ORDER BY
+		sort,
+		creatTime DESC
+	</select>
+
+	<select id="getAttributeById" resultType="com.run.dataConversion.entity.Attributes">
+		SELECT
+		a.id,
+		a.iotName,
+		a.iotMark,
+		a.deviceTypeId,
+		a.creatTime,
+		a.updateTime,
+		a.sort,
+		a.dataType,
+		a.rwType,
+		a.dataRange,
+		a.manageState,
+		a.locmanName,
+		a.locmanMark
+		FROM
+		Attributes a
+		WHERE
+		a.id = #{id}
+
+	</select>
+
+	<select id="getAttributeByApplicationId" resultType="com.run.dataConversion.entity.Attributes">
+		SELECT
+		DISTINCT
+		a.iotMark iotMark,
+		a.locmanMark locmanMark,
+		a.locmanName locmanName
+		FROM
+		Attributes a
+		LEFT
+		JOIN DeviceType dt ON a.deviceTypeId = dt.id
+		LEFT JOIN Device d ON
+		d.deviceTypeId = dt.id
+		WHERE
+		d.hardware = #{hardware}
+		AND
+		d.applicationId = #{applicationId}
+		AND
+		a.manageState = 'enable'
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.run.dataConversion.repository.DeviceTypeRepository">
+	<insert id="createDeviceType" parameterType="java.util.Map">
+		insert into DeviceType(
+		id,
+		deviceTypeName,
+		applicationId,
+		creatTime,
+		iotDeviceTypeId,
+		iotDeviceTypeName
+		)
+		values(
+		#{id},
+		#{deviceTypeName},
+		#{applicationId},
+		now(),
+		#{iotDeviceTypeId},
+		#{iotDeviceTypeName}
+		)
+	</insert>
+	<select id="getAllDeviceTypes" resultType="java.util.Map">
+		SELECT
+		dt.id,
+		dt.deviceTypeName,
+		dt.applicationId,
+		dt.iotDeviceTypeName,
+		apt.platformName,
+		dt.iotDeviceTypeId,
+		COUNT(d.id) deviceNum
+		FROM
+		DeviceType dt
+		LEFT JOIN ApplicationTable apt ON apt.id = dt.applicationId
+		LEFT JOIN UserAdmin ua ON ua.id = apt.userId
+		LEFT JOIN Device d ON d.deviceTypeId = dt.id
+		WHERE
+		ua.id = #{userId}
+		<if test="null !=searchKey and searchKey !=''">
+			and dt.deviceTypeName like CONCAT ('%',#{searchKey},'%')
+		</if>
+		GROUP BY dt.id
+		order by dt.applicationId, dt.creatTime desc
+	</select>
+	<select id="getDeviceTypeById" resultType="java.util.Map">
+		SELECT
+		dt.id,
+		dt.deviceTypeName,
+		dt.applicationId,
+		dt.iotDeviceTypeName,
+		dt.iotDeviceTypeId
+		FROM
+		DeviceType dt
+		WHERE
+		dt.applicationId = #{applicationId}
+		and dt.id = #{id}
+	</select>
+	
+	<update id="updateDeviceType" parameterType="java.util.Map">
+		UPDATE DeviceType
+		SET id = #{id},
+		deviceTypeName = #{deviceTypeName},
+		applicationId = #{applicationId},
+		iotDeviceTypeId = #{iotDeviceTypeId},
+		iotDeviceTypeName = #{iotDeviceTypeName}
+		WHERE
+		id = #{id}
+		
+	</update>
+
+</mapper>

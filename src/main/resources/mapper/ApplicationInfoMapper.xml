@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.run.dataConversion.repository.ApplicationInfoRepository">
+	<insert id="addApplicationInfo" parameterType="com.run.dataConversion.entity.ApplicationEntity">
+		insert into
+		ApplicationTable(
+		id,
+		platformName,
+		platformUrl,
+		userId,
+		locmanUrl,
+		iotName,
+		iotAppId,
+		iotAppIKey,
+		creatTime,
+		creatUser,
+		manageState,
+		iotUrl)
+		values(
+		#{id},
+		#{platformName},
+		#{platformUrl},
+		#{userId},
+		#{locmanUrl},
+		#{iotName},
+		#{iotAppId},
+		#{iotAppIKey},
+		#{creatTime},
+		#{creatUser},
+		#{manageState},
+		#{iotUrl}
+		)
+	</insert>
+
+	<select id="getApplicationInfo" resultType="java.util.Map">
+		SELECT
+			a.id,
+			a.iotAppId,
+			a.iotAppIKey,
+			a.iotCertificate,
+			a.creatUser,
+			a.creatTime,
+			a.userId,
+			a.updateUser,
+			a.updateTime,
+			a.platformUrl,
+			a.platformName,
+			a.manageState,
+			a.locmanUrl,
+			a.iotUrl,
+			ii.iotName iotName
+		FROM
+			ApplicationTable a
+		LEFT JOIN IotPlatformInfo ii ON ii.id = a.iotName
+		WHERE
+			a.manageState = 'enable'
+		AND a.userId = #{userId}
+		<if test="null !=searchKey and searchKey !=''">
+			and (
+			a.id =#{searchKey}
+			or
+			a.platformName like CONCAT
+			('%',#{searchKey},'%')
+			or
+			a.iotAppId =#{searchKey}
+			or
+			a.iotAppIKey=#{searchKey}
+			)
+		</if>
+		ORDER BY a.creatTime desc ,a.updateTime DESC
+
+	</select>
+
+	<update id="updateApplicationInfo" parameterType="com.run.dataConversion.entity.ApplicationEntity">
+		UPDATE
+		ApplicationTable
+		SET
+		platformName =#{platformName} ,
+		platformUrl =
+		#{platformUrl} ,
+		locmanUrl =#{locmanUrl} ,
+		iotName= #{iotName} ,
+		iotAppId= #{iotAppId} ,
+		iotAppIKey = #{iotAppIKey} ,
+		updateTime =
+		#{updateTime} ,
+		updateUser = #{updateUser} ,
+		iotUrl=#{iotUrl}
+		WHERE
+		id=#{id}
+	</update>
+
+	<update id="disableApplicationInfo" parameterType="java.util.Map">
+		UPDATE
+		ApplicationTable
+		SET
+		manageState = #{manageState}
+		WHERE
+		id=#{id}
+	</update>
+
+
+	<select id="getApplicationInfoById" resultType="com.run.dataConversion.entity.ApplicationEntity">
+		SELECT
+			a.id,
+			a.iotAppId,
+			a.iotAppIKey,
+			a.iotCertificate,
+			a.creatUser,
+			a.creatTime,
+			a.userId,
+			a.updateUser,
+			a.updateTime,
+			a.platformUrl,
+			a.platformName,
+			a.manageState,
+			a.locmanUrl,
+			a.iotUrl,
+			ii.iotName iotName
+		FROM
+			ApplicationTable a
+		LEFT JOIN IotPlatformInfo ii ON ii.id = a.iotName
+		where a.id = #{id}
+		and manageState = 'enable'
+	</select>
+
+
+	<select id="getIotTypeByName" resultType="java.lang.String">
+		select type from
+		IotPlatformInfo where iotName = #{id}
+	</select>
+
+	<select id="getIotNameList" resultType="java.util.Map">
+		SELECT
+			i.id id,
+			i.iotName iotName
+		FROM
+			IotPlatformInfo i
+	</select>
+
+</mapper>

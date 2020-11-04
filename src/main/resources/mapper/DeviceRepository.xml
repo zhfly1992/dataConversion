@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.run.dataConversion.repository.DeviceRepository">
+	<insert id="addDeviceInfo" parameterType="com.run.dataConversion.entity.DeviceEntity">
+		insert into Device
+		values(
+		#{id},
+		#{iotDeviceId},
+		#{hardware},
+		#{TDengineMark},
+		#{applicationId},
+		#{deviceTypeId},
+		#{creatTime},
+		#{updateTime},
+		#{deviceType},
+		#{nodeId},
+		#{manufacturerName},
+		#{deviceCreateTime}
+		)
+	</insert>
+
+
+	<select id="queryDeviceInfoByIOTDeviceId" parameterType="java.lang.String"
+		resultType="com.run.dataConversion.entity.DeviceEntity">
+		select
+		id,
+		iotDeviceId,
+		hardware,
+		TDengineMark,
+		applicationId,
+		creatTime,
+		updateTime,
+		deviceType,
+		nodeId,
+		manufacturerName,
+		deviceCreateTime,
+		deviceTypeId
+		from
+		Device where iotDeviceId =
+		#{iotDeviceId}
+	</select>
+
+
+	<update id="updateDeviceInfo" parameterType="com.run.dataConversion.entity.DeviceEntity">
+		update Device set
+		hardware = #{hardware}, updateTime = #{updateTime} where iotDeviceId =
+		#{iotDeviceId}
+	</update>
+
+
+
+	<select id="queryDeviceInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		<include refid="deviceInfo" />
+		limit #{pageStart},#{pageSize}
+	</select>
+
+	<sql id="deviceInfo">
+		select
+		device.id id,
+		device.iotDeviceId iotDeviceId,
+		device.hardware
+		hardware,
+		dt.deviceTypeName deviceType,
+		max(cvs.receiveTime) receiveTime
+		from
+		Device device left join DeviceType dt
+		on device.deviceTypeId =
+		dt.id
+		left JOIN Conversion cvs
+		on cvs.DeviceId = device.id
+		left join
+		ApplicationTable app
+		on app.id = device.applicationId
+		<where>
+			<if test="selectKey != '' and selectKey != null">
+				(
+				device.id = #{selectKey}
+				or device.iotDeviceId =
+				#{selectKey}
+				or instr(device.hardware,#{selectKey})>0
+				)
+			</if>
+			<if test="deviceTypeId != '' and  deviceTypeId != null">
+				and device.deviceTypeId = #{deviceTypeId}
+			</if>
+			<if test="userId != '' and userId!=null ">
+				and app.userId = #{userId}
+			</if>
+		</where>
+		group by
+		device.id,
+		device.iotDeviceId,
+		device.hardware,
+		dt.deviceTypeName
+		order by receiveTime desc
+	</sql>
+
+
+	<select id="queryDeviceInfoCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(a.id) from (
+		<include refid="deviceInfo"></include>
+		)a
+	</select>
+
+
+	<select id="queryDeviceByAppIdAndDeviceTypeId" resultType="com.alibaba.fastjson.JSONObject">
+		select id as id,iotDeviceId as iotDeviceId,applicationId as
+		applicationId,deviceTypeId as
+		iotDeviceTypeId,deviceType as
+		iotdeviceType,nodeId as hardwareId
+		from
+		Device where
+		applicationId =
+		#{applicationId} and
+		deviceTypeId =
+		#{deviceTypeId}
+	</select>
+</mapper>

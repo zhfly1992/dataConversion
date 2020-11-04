@@ -1,0 +1,191 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+	<property name="autoIncrement" value="true" dbms="mysql" />
+	
+	<!-- 创建用户数据表 -->
+	<changeSet id="20200708_createUserAdmin" author="钟滨远">
+		<comment>用户表</comment>
+		<createTable tableName="UserAdmin">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="account" type="varchar(32)" remarks="账号">
+				<constraints nullable="false" />
+			</column>
+			<column name="password" type="varchar(32)" remarks="密码">
+				<constraints nullable="false" />
+			</column>
+			<column name="creatTime" type="varchar(32)" remarks="创建时间">
+				<constraints nullable="false" />
+			</column>
+			<column name="manageState" type="varchar(32)" remarks="启用/停用">
+			<constraints nullable="false" />
+			</column>
+			<column name="updateStateTime" type="varchar(32)" remarks="启用/停用时间">
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<!-- 应用表 -->
+	<changeSet id="20200708_createApplicationTable" author="钟滨远">
+		<comment>应用表</comment>
+		<createTable tableName="ApplicationTable">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="platformName" type="varchar(32)" remarks="本平台应用名称">
+				<constraints nullable="false" />
+			</column>
+			<column name="platformUrl" type="text" remarks="本平台对外回调地址">
+				<constraints nullable="false" />
+			</column>
+			<column name="userId" type="varchar(64)" remarks="用户ID">
+				<constraints nullable="false" />
+			</column>
+			<column name="locmanUrl" type="text" remarks="locman回调地址">
+			<constraints nullable="false" />
+			</column>
+			<column name="iotName" type="varchar(32)" remarks="iot平台名称">
+			</column>
+			<column name="iotCertificate" type="text" remarks="iot平台证书">
+			</column>
+			<column name="iotAppId" type="varchar(64)" remarks="iotAppId">
+			</column>
+			<column name="iotAppIKey" type="varchar(64)" remarks="iotAppIKey">
+			</column>
+			<column name="creatTime" type="varchar(32)" remarks="创建时间">
+			</column>
+			<column name="creatUser" type="varchar(64)" remarks="创建人">
+			</column>
+			<column name="updateTime" type="varchar(32)" remarks="修改时间">
+			</column>
+			<column name="updateUser" type="varchar(64)" remarks="修改人">
+			</column>
+			<column name="manageState" type="varchar(32)" remarks="启用/停用">
+			<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<!-- 设备表 -->
+	<changeSet id="20200708_createDevice" author="钟滨远">
+		<comment>设备表</comment>
+		<createTable tableName="Device">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="iotDeviceId" type="varchar(64)" remarks="iot设备Id">
+				<constraints nullable="false" />
+			</column>
+			<column name="hardware" type="varchar(32)" remarks="硬件编码">
+				<constraints nullable="false" />
+			</column>
+			<column name="TDengineMark" type="varchar(32)" remarks="TDengine数据唯一标志">
+			</column>
+			<column name="applicationId" type="varchar(64)" remarks="应用id">
+			</column>
+			<column name="deviceTypeId" type="varchar(64)" remarks="设备类型id">
+			</column>
+			<column name="creatTime" type="varchar(32)" remarks="创建时间">
+			</column>
+			<column name="updateTime" type="varchar(32)" remarks="修改时间">
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<!-- 设备类型表 -->
+	<changeSet id="20200708_createDeviceType" author="钟滨远">
+		<comment>设备类型表</comment>
+		<createTable tableName="DeviceType">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="deviceTypeName" type="varchar(32)" remarks="设备类型名称">
+				<constraints nullable="false" />
+			</column>
+			<column name="applicationId" type="varchar(64)" remarks="应用id">
+			<constraints nullable="false" />
+			</column>
+			<column name="creatTime" type="varchar(32)" remarks="创建时间">
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<!-- 属性点表 -->
+	<changeSet id="20200708_createAttributes" author="钟滨远">
+		<comment>属性点表</comment>
+		<createTable tableName="Attributes">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="iotName" type="varchar(32)" remarks="iot属性点名称">
+				<constraints nullable="false" />
+			</column>
+			<column name="iotMark" type="varchar(32)" remarks="iot属性点标志">
+				<constraints nullable="false" />
+			</column>
+			<column name="deviceTypeId" type="varchar(64)" remarks="设备类型id">
+			</column>
+			<column name="creatTime" type="varchar(32)" remarks="创建时间">
+			</column>
+			<column name="updateTime" type="varchar(32)" remarks="修改时间">
+			</column>
+			<column name="sort" type="varchar(32)" remarks="排序">
+			</column>
+			<column name="dataType" type="varchar(32)" remarks="数据类型">
+			</column>
+			<column name="rwType" type="varchar(32)" remarks="读写类型">
+			</column>
+			<column name="dataRange" type="varchar(32)" remarks="数据值取值范围">
+			</column>
+			<column name="manageState" type="varchar(32)" remarks="启用/停用">
+			<constraints nullable="false" />
+			</column>
+			<column name="locmanName" type="varchar(32)" remarks="locman属性点名称">
+			</column>
+			<column name="locmanMark" type="varchar(32)" remarks="locman属性点标志">
+			</column>
+			
+		</createTable>
+	</changeSet>
+	
+	<!-- 数据接收转换表 -->
+	<changeSet id="20200708_createConversion" author="钟滨远">
+		<comment>数据接收转换表</comment>
+		<createTable tableName="Conversion">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="DeviceId" type="varchar(64)" remarks="设备Id">
+				<constraints nullable="false" />
+			</column>
+			<column name="hardware" type="varchar(32)" remarks="硬件编码">
+				<constraints nullable="false" />
+			</column>
+			<column name="receiveData" type="text" remarks="接收到的数据">
+			</column>
+			<column name="receiveTime" type="varchar(32)" remarks="接收时间">
+			</column>
+			<column name="conversionData" type="text" remarks="转换后的数据">
+			</column>
+			<column name="sendToLocmanTime" type="varchar(32)" remarks="向locman发送时间">
+			</column>
+			<column name="responseData" type="text" remarks="locman响应数据">
+			</column>
+			<column name="responseStatusCode" type="varchar(12)" remarks="locman响应状态码">
+			</column>
+			<column name="applicationId" type="varchar(64)" remarks="应用id">
+			</column>
+			
+		</createTable>
+	</changeSet>
+	
+	
+
+
+</databaseChangeLog>

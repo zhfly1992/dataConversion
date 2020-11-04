@@ -1,0 +1,71 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+	<property name="autoIncrement" value="true" dbms="mysql" />
+
+
+	<!-- 设备表 -->
+	<changeSet id="20200713_updateDevice" author="廖丹">
+		<comment>设备表新增字段</comment>
+		<addColumn tableName="Device">
+			<column name="deviceType" type="varchar(255)" remarks="设备类型名称">
+			</column>
+			<column name="nodeId" type="varchar(255)" remarks="设备识别码">
+			</column>
+			<column name="manufacturerName" type="varchar(64)" remarks="厂商">
+			</column>
+			<column name="deviceCreateTime" type="varchar(32)" remarks="IOT创建设备时间">
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<!-- 设备类型表 -->
+	<changeSet id="20200714_updateDeviceType" author="郭飞龙">
+		<comment>设备类型表新增字段</comment>
+		<addColumn tableName="DeviceType">
+			<column name="iotDeviceTypeId" type="varchar(255)" remarks="iot设备类型id" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="20200715_updateApplicationTable" author="钟滨远">
+		<comment>应用表新增字段</comment>
+		<addColumn tableName="ApplicationTable">
+			<column name="iotUrl" type="varchar(64)" remarks="其他iot回调地址" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="20200715_updateDeviceType_addIotDeviceTypeName"
+		author="郭飞龙">
+		<comment>设备类型表新增字段</comment>
+		<addColumn tableName="DeviceType">
+			<column name="iotDeviceTypeName" type="varchar(255)" remarks="iot设备类型名称" />
+		</addColumn>
+	</changeSet>
+
+
+	<changeSet id="20200804_updateConversion_updatehardwareId"
+		author="张贺">
+		<comment>更改hardware字段为hardwareId</comment>
+		<renameColumn tableName="Conversion" oldColumnName="hardware"
+			newColumnName="hardwareId" columnDataType="varchar(32)"/>
+	</changeSet>
+	
+	<!-- 设备表 -->
+	<changeSet id="20200812_addIotPlatformInfo" author="郭飞龙">
+		<comment>iot平台名称常量表</comment>
+		<createTable tableName="IotPlatformInfo">
+			<column name="id" type="varchar(64)" remarks="主键id">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="iotName" type="varchar(255)" remarks="iot名称">
+			</column>
+			<column name="type" type="varchar(64)" remarks="iot类型:0:华为iot,1:电信iot,2:魔方iot">
+			</column>
+		</createTable>
+	</changeSet>
+	
+</databaseChangeLog>
